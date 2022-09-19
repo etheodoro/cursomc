@@ -139,8 +139,6 @@ public class CursomcApplication implements CommandLineRunner {
 		p1.getItens().addAll(Arrays.asList(ip1));
 		p2.getItens().addAll(Arrays.asList(ip3));
 		p3.getItens().addAll(Arrays.asList(ip2));
-
-		
 		
 	}
 	
