@@ -1,5 +1,6 @@
 package com.etheodoro.cursomc.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,4 +45,10 @@ public class CategoriaService {
 		}
 	}
 	
+	public List<Categoria> findAll() {
+		Optional<List<Categoria>> optional = Optional.of(repo.findAll());
+		return optional.orElseThrow(() -> new ObjectNotFoundException(
+				"Nenhuma Categoria encontradas" + Categoria.class.getName())
+		);
+	}
 }
