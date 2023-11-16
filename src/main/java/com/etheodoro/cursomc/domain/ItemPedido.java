@@ -1,6 +1,8 @@
 package com.etheodoro.cursomc.domain;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.persistence.EmbeddedId;
@@ -102,6 +104,21 @@ public class ItemPedido implements Serializable{
 			return false;
 		ItemPedido other = (ItemPedido) obj;
 		return Objects.equals(id, other.id);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		Locale localBrasil =  new Locale("pt", "BR");
+		builder.append(getProduto().getNome());
+		builder.append(", Qte: ");
+		builder.append(getQuantidade());
+		builder.append(", Preço unitário: ");
+		builder.append(NumberFormat.getCurrencyInstance(localBrasil).format((getPreco())));
+		builder.append(", Subtotal: ");
+		builder.append(NumberFormat.getCurrencyInstance(localBrasil).format((getSubTotal())));
+		builder.append("\n");
+		return builder.toString();
 	}
 
 }

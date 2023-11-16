@@ -11,8 +11,6 @@ import com.etheodoro.cursomc.domain.ItemPedido;
 import com.etheodoro.cursomc.domain.PagamentoComBoleto;
 import com.etheodoro.cursomc.domain.Pedido;
 import com.etheodoro.cursomc.domain.enums.EstadoPagamento;
-import com.etheodoro.cursomc.repositories.ItemPedidoRepository;
-import com.etheodoro.cursomc.repositories.PagamentoRepository;
 import com.etheodoro.cursomc.repositories.PedidoRepository;
 import com.etheodoro.cursomc.services.exceptions.ObjectNotFoundException;
 
@@ -26,13 +24,16 @@ public class PedidoService {
 	private BoletoService boletoService;
 
 	@Autowired
-	private PagamentoRepository pagamentoRepository;
+	private PagamentoService pagamentoService;
 	
 	@Autowired
 	private ProdutoService produtoService;
 	
 	@Autowired
-	private ItemPedidoRepository itemPedidoRepository;
+	private ItemPedidoService itemPedidoService;
+	
+	@Autowired
+	private ClienteService clienteService;
 	
 	public Pedido find(Integer id) {
 		repo.findById(id).orElse(null);
@@ -46,20 +47,26 @@ public class PedidoService {
 	public Pedido insert(Pedido obj) {
 		obj.setId(null);
 		obj.setInstante(new Date());
+		obj.setCliente(clienteService.find(obj.getCliente().getId()));
 		obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		obj.getPagamento().setPedido(obj);
 		if (obj.getPagamento() instanceof PagamentoComBoleto) {
 			PagamentoComBoleto boleto = (PagamentoComBoleto) obj.getPagamento();
 			boletoService.preencherPagamentoComBoleto(boleto, obj.getInstante());
 		}
+		
 		obj = repo.save(obj);
-		pagamentoRepository.save(obj.getPagamento());
+		pagamentoService.insert(obj.getPagamento());
 		for ( ItemPedido i : obj.getItens() ) {
 			i.setDesconto(0.0);
-			i.setPreco(produtoService.find(i.getProduto().getId()).getPreco());
 			i.setPedido(obj);
+			i.setProduto(produtoService.find(i.getProduto().getId()));
+			i.setPreco(i.getProduto().getPreco());
 		}
-		itemPedidoRepository.saveAll(obj.getItens());
+		itemPedidoService.insertAll(obj);
+		
+		System.out.println(obj);		
+		
 		return obj;
 	}
 	
