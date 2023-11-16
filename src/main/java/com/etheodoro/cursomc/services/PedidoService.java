@@ -35,6 +35,9 @@ public class PedidoService {
 	@Autowired
 	private ClienteService clienteService;
 	
+	@Autowired
+	private EmailService emailService;
+	
 	public Pedido find(Integer id) {
 		repo.findById(id).orElse(null);
 		Optional<Pedido> optional = repo.findById(id);
@@ -65,7 +68,7 @@ public class PedidoService {
 		}
 		itemPedidoService.insertAll(obj);
 		
-		System.out.println(obj);		
+		emailService.sendOrderConfirmationEmail(obj);		
 		
 		return obj;
 	}
