@@ -28,6 +28,7 @@ public class SecurityConfig {
 	private static final String[] PUBLIC_MATCHES_GET = {
 			"/produtos/**"
 			,"/categorias/**"
+			,"/clientes/**"
 	};
 	
     @Bean
