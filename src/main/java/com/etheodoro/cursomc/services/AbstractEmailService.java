@@ -52,7 +52,6 @@ public abstract class AbstractEmailService implements EmailService {
 	
 	@Override
 	public void sendOrderConfirmationHtmlEmail(Pedido obj) {
-		String html = htmlFromTemplatePedido(obj);
 		MimeMessage mm;
 		try {
 			mm = prepareMimeMessageFromPedido(obj);
@@ -68,7 +67,7 @@ public abstract class AbstractEmailService implements EmailService {
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
 		helper.setTo(obj.getCliente().getEmail());
 		helper.setFrom(sender);
-		helper.setSubject("Pedido confoirmado! Código: " + obj.getId());
+		helper.setSubject("Pedido confirmado! Código: " + obj.getId());
 		helper.setSentDate(new Date(System.currentTimeMillis()));
 		helper.setText(htmlFromTemplatePedido(obj), true);
 		return message;

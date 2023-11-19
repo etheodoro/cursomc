@@ -3,6 +3,8 @@ package com.etheodoro.cursomc.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.etheodoro.cursomc.domain.PagamentoComBoleto;
 import com.etheodoro.cursomc.domain.PagamentoComCartao;
@@ -20,6 +22,11 @@ public class JacksonConfig {
 			}
 		};
 		return builder;
+	}
+
+    @Bean
+    JavaMailSender jMS(){
+		return new JavaMailSenderImpl();
 	}
 	
 }
