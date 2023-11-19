@@ -7,6 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -38,6 +39,7 @@ public class SecurityConfig {
     	
     	http.cors(Customizer.withDefaults()).csrf(csrf -> csrf.disable());
 		http.authorizeHttpRequests((authz) -> authz
+				.antMatchers(PUBLIC_MATCHES_GET).permitAll()
 				.antMatchers(PUBLIC_MATCHES).permitAll()
 				.anyRequest().authenticated()
             ).sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -50,5 +52,10 @@ public class SecurityConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
+    }
+    
+    @Bean
+    BCryptPasswordEncoder bCryptPasswordEncoder() {
+    	return new BCryptPasswordEncoder();
     }
 }
