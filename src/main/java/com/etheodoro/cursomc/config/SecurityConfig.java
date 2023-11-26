@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.etheodoro.cursomc.security.JWTAuthenticationFilter;
+import com.etheodoro.cursomc.security.JWTAuthorizationFilter;
 import com.etheodoro.cursomc.security.JWTUtil;
 
 import io.jsonwebtoken.lang.Arrays;
@@ -66,10 +67,8 @@ public class SecurityConfig {
         .antMatchers(PUBLIC_MATCHES_GET).permitAll()
 		.antMatchers(PUBLIC_MATCHES).permitAll()
 		.anyRequest().authenticated().and()
-		// User Authentication with custom login URL path 
 		.addFilter(new JWTAuthenticationFilter(authenticationManager, jwtUtil)))
-		// User Authorization with JWT 
-		.addFilter(new JWTAuthenticationFilter(authenticationManager, jwtUtil))
+		.addFilter(new JWTAuthorizationFilter(authenticationManager, jwtUtil, userDetailsService))
 		.authenticationManager(authenticationManager)
 		.sessionManagement((session) -> session
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
