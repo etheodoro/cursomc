@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,6 +29,7 @@ import io.jsonwebtoken.lang.Arrays;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	
 	@Autowired
@@ -46,8 +48,12 @@ public class SecurityConfig {
 	private static final String[] PUBLIC_MATCHES_GET = {
 			"/produtos/**"
 			,"/categorias/**"
-			,"/clientes/**"
 	};
+	
+	private static final String[] PUBLIC_MATCHES_POST = {
+			"/clientes/**"
+	};
+	
 	
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -66,6 +72,7 @@ public class SecurityConfig {
         .authorizeHttpRequests((authz) -> authz	
         .antMatchers(PUBLIC_MATCHES_GET).permitAll()
 		.antMatchers(PUBLIC_MATCHES).permitAll()
+		.antMatchers(PUBLIC_MATCHES_POST).permitAll()
 		.anyRequest().authenticated().and()
 		.addFilter(new JWTAuthenticationFilter(authenticationManager, jwtUtil)))
 		.addFilter(new JWTAuthorizationFilter(authenticationManager, jwtUtil, userDetailsService))
