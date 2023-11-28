@@ -9,8 +9,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.etheodoro.cursomc.services.exceptions.AuthorizationException;
 import com.etheodoro.cursomc.services.exceptions.DataIntegrityException;
 import com.etheodoro.cursomc.services.exceptions.ObjectNotFoundException;
+
+import io.jsonwebtoken.ExpiredJwtException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
@@ -34,6 +37,21 @@ public class ResourceExceptionHandler {
 			err.addError(x.getField(), x.getDefaultMessage());
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+	}
+	
+	@ExceptionHandler(AuthorizationException.class)
+	public ResponseEntity<StandartError> authorization(ObjectNotFoundException e, HttpServletRequest request) {
+		StandartError err = new StandartError(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+	}
+	
+	@ExceptionHandler(ExpiredJwtException.class)
+	public ResponseEntity<StandartError> expiration(MethodArgumentNotValidException e, HttpServletRequest request) {
+		ValidationError err = new ValidationError(HttpStatus.UNAUTHORIZED.value(), "Token expirado.", System.currentTimeMillis());
+		for (FieldError x : e.getBindingResult().getFieldErrors()) {
+			err.addError(x.getField(), x.getDefaultMessage());
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
 	}
 	
 }

@@ -125,7 +125,7 @@ public class DBServie {
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 		
 		//Cliente cli1 = new Cliente(null, "Maria Silva", "Maria@gmail.com", "01234567890", TipoCliente.PESSOA_FISICA);
-		Cliente cli1 = new Cliente(null, "Maria Silva", passwordEncoder.encode("123456"), "evandrix@hotmail.com.br", "01234567890", TipoCliente.PESSOA_FISICA);
+		Cliente cli1 = new Cliente(null, "Maria Silva", passwordEncoder.encode("123456"), "evandrix@hotmail.com", "01234567890", TipoCliente.PESSOA_FISICA);
 		Cliente cli2 = new Cliente(null, "Ana Costa ", passwordEncoder.encode("123456"), "evandrolt@gmail.com", "91204443033", TipoCliente.PESSOA_FISICA);
 		cli2.addPerfil(Perfil.ADMIN);
 		

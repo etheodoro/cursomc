@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -63,18 +62,6 @@ public class JWTUtil {
 	                .build()
 	                .parseClaimsJws(token)
 	                .getBody();
-		} catch (ExpiredJwtException e) {
-			throw e;
-		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	private JwsHeader  getHeader(String token) {
-		try {
-			return Jwts.parser()
-		        .setSigningKey(secret.getBytes())
-		        .build()
-		        .parseClaimsJws(token).getHeader();
 		} catch (ExpiredJwtException e) {
 			throw e;
 		}

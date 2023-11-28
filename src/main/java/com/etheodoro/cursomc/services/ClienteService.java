@@ -15,12 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.etheodoro.cursomc.domain.Cidade;
 import com.etheodoro.cursomc.domain.Cliente;
 import com.etheodoro.cursomc.domain.Endereco;
+import com.etheodoro.cursomc.domain.enums.Perfil;
 import com.etheodoro.cursomc.domain.enums.TipoCliente;
 import com.etheodoro.cursomc.dto.ClienteDTO;
 import com.etheodoro.cursomc.dto.ClienteNewDTO;
 import com.etheodoro.cursomc.repositories.CidadeRepository;
 import com.etheodoro.cursomc.repositories.ClienteRepository;
 import com.etheodoro.cursomc.repositories.EnderecoRepository;
+import com.etheodoro.cursomc.security.UserSecurity;
+import com.etheodoro.cursomc.services.exceptions.AuthorizationException;
 import com.etheodoro.cursomc.services.exceptions.DataIntegrityException;
 import com.etheodoro.cursomc.services.exceptions.ObjectNotFoundException;
 
@@ -38,8 +41,15 @@ public class ClienteService {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+
 	
 	public Cliente find(Integer id) {
+		
+		UserSecurity user = UserService.authenticated();
+		if ( user == null || !user.hasRole(Perfil.ADMIN) &&  !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado.");
+		}
+		
 		repo.findById(id).orElse(null);
 		Optional<Cliente> optional = repo.findById(id);
 		return optional.orElseThrow(() -> new ObjectNotFoundException(
