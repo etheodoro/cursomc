@@ -31,7 +31,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws IOException, ServletException, ExpiredJwtException {
+			throws IOException, ServletException {
 
 		String header = request.getHeader("Authorization");
 		
@@ -41,7 +41,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 			try {
 				auth = getAuthentication(header.substring(7));
 			} catch (ExpiredJwtException e) {
-				throw e;
+				 final String expiredMsg = e.getMessage();
+			        logger.warn(expiredMsg);
+
+			        final String msg = (expiredMsg != null) ? expiredMsg : "Unauthorized";
+			        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED, msg);
 			}
 			
 			if (auth != null) {
