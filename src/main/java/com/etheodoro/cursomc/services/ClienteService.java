@@ -78,6 +78,10 @@ public class ClienteService {
 		return repo.save(newObj);
 	}
 	
+	public void save(Cliente cliente) {
+		repo.save(cliente);
+	}
+	
 	public void delete(Integer id) {
 		Cliente obj = find(id);
 		try {

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.etheodoro.cursomc.domain.Cliente;
 import com.etheodoro.cursomc.domain.Pedido;
 
 @Service
@@ -71,6 +72,22 @@ public abstract class AbstractEmailService implements EmailService {
 		helper.setSentDate(new Date(System.currentTimeMillis()));
 		helper.setText(htmlFromTemplatePedido(obj), true);
 		return message;
+	}
+	
+	@Override
+	public void sendNewPasswordEmail(Cliente cliente, String newPass) {
+		SimpleMailMessage sm = preparedNewPasswordEmail(cliente, newPass);
+		sendEmail(sm);
+	}
+	
+	protected SimpleMailMessage preparedNewPasswordEmail(Cliente cliente, String newPass) {
+		SimpleMailMessage sm = new SimpleMailMessage();
+		sm.setTo(cliente.getEmail());
+		sm.setFrom(sender);
+		sm.setSubject("Solicitação de nova senha");
+		sm.setSentDate(new Date(System.currentTimeMillis()));
+		sm.setText("Nova senha: " + newPass);
+		return sm;
 	}
 	
 }
