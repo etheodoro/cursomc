@@ -45,7 +45,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 			        logger.warn(expiredMsg);
 
 			        final String msg = (expiredMsg != null) ? expiredMsg : "Unauthorized";
-			        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED, msg);
+			        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
 			}
 			
 			if (auth != null) {

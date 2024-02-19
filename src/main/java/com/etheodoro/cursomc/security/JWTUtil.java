@@ -54,14 +54,15 @@ public class JWTUtil {
 		return null;
 	}	
 	
-	@SuppressWarnings("deprecation")
+
 	private Claims getClaims(String token) {			
 		try {
-			return  Jwts.parser()
-	                .setSigningKey(secret.getBytes())
-	                .build()
-	                .parseClaimsJws(token)
-	                .getBody();
+			return Jwts.parser()
+					.verifyWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
+			        .build()
+			        .parseSignedClaims(token)
+			        .getPayload();
+
 		} catch (ExpiredJwtException e) {
 			throw e;
 		}
@@ -75,5 +76,4 @@ public class JWTUtil {
 		return expiration;
 	}
 
-	
 }
